@@ -43,10 +43,12 @@ if __name__ == "__main__":
                     else:
                         if current_token in keywords.keys():
                             print(keywords[current_token])
+                            current_token = ''
+                            token_type = None
                         else:
                             print(f'Ident({current_token})')
-                        current_token = ''
-                        token_type = None
+                            current_token = ''
+                            token_type = None
                 if token_type == 'symbol':
                     if current_char == '=' and current_token == ':':
                         current_token += current_char
