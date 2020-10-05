@@ -54,6 +54,7 @@ if __name__ == "__main__":
                         current_token += current_char
                     else:
                         print(keywords[current_token])
+                        current_token = ''
                         token_type = None
                 if token_type == None:
                     if current_char.isdigit():
