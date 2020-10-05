@@ -26,6 +26,24 @@ if __name__ == "__main__":
             current_line = f.readline()
             if not current_line:
                 break
-            print(current_line)
+            token_list = current_line.split()
+            for token in token_list:
+                if token in keywords.keys():
+                    print(keywords[token])
+                elif token.isdigit():
+                    print(f'Int({int(token)})')
+                elif token[0].isalpha() and token.isalnum():
+                    print(f'Ident({token})')
+                elif token[0].isdigit() and token.isalnum():
+                    for ch in token:
+                        if ch.isalpha():
+                            start = token.find(ch)
+                            print(f'Int({int(token[:start])})')
+                            print(f'Ident({token[start:]})')
+                            break
+                elif token.isspace():
+                    pass
+                else:
+                    sys.exit(0)
     except EOFError:
         pass
