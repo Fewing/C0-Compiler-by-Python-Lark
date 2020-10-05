@@ -44,6 +44,6 @@ if __name__ == "__main__":
                 elif token.isspace():
                     pass
                 else:
-                    break
+                    sys.exit(0)
     except EOFError:
         pass
