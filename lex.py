@@ -69,6 +69,7 @@ if __name__ == "__main__":
                     elif current_char.isspace():
                         pass
                     else:
+                        print('Unknown')
                         sys.exit(0)
     except EOFError:
         pass
