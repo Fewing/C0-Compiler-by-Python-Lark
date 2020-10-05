@@ -1,5 +1,6 @@
 import string
-import os
+import sys
+
 
 keywords = {}
 keywords['BEGIN'] = 'Begin'
@@ -19,7 +20,7 @@ keywords[':='] = 'Assign'
 
 if __name__ == "__main__":
     try:
-        path = os.environ['input']
+        path = sys.argv[0]
         f = open(path)
         while True:
             current_line = f.readline()
