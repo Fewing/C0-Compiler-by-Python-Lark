@@ -20,7 +20,7 @@ keywords[':='] = 'Assign'
 
 if __name__ == "__main__":
     try:
-        path = sys.argv[0]
+        path = sys.argv[1]
         f = open(path)
         while True:
             current_line = f.readline()
