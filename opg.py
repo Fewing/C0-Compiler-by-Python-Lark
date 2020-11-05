@@ -43,7 +43,7 @@ if __name__ == "__main__":
                 else:
                     print('RE')
                     break
-            elif input_str[i] in m and m[stack[len(stack)-1]][input_str[i]] == -1 or m[stack[len(stack)-1]][input_str[i]] == 0:
+            elif input_str[i] in m and (m[stack[len(stack)-1]][input_str[i]] == -1 or m[stack[len(stack)-1]][input_str[i]] == 0):
                 stack.append(input_str[i])
                 print('I'+input_str[i])
                 i += 1
@@ -61,7 +61,7 @@ if __name__ == "__main__":
                 else:
                     print('RE')
                     break
-            elif input_str[i] in m and m[stack[len(stack)-2]][input_str[i]] == -1 or m[stack[len(stack)-2]][input_str[i]] == 0:
+            elif input_str[i] in m and (m[stack[len(stack)-2]][input_str[i]] == -1 or m[stack[len(stack)-2]][input_str[i]] == 0):
                 stack.append(input_str[i])
                 if input_str[i] == '#':
                     break
