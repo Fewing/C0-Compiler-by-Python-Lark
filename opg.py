@@ -25,6 +25,7 @@ if __name__ == "__main__":
     i = 0
     input_str += '#'
     input_str = input_str.replace('\n','')
+    input_str = input_str.replace('\r','')
     stack.append('#')
     while True:
         if stack[len(stack)-1] in m:
