@@ -1,4 +1,4 @@
-[jobs.pascal_lex]
+[jobs.opg]
 
 image = { source = "dockerfile", path = ".", tag = "pascal-lex-example" }
 
