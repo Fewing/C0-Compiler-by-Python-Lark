@@ -24,9 +24,8 @@ if __name__ == "__main__":
     input_str = f.readline()
     i = 0
     input_str += '#'
+    input_str = input_str.replace('\n','')
     stack.append('#')
-    print(input_str)
-    exit(0)
     while True:
         if stack[len(stack)-1] in m:
             if m[stack[len(stack)-1]][input_str[i]] == 1:
