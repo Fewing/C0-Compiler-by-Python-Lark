@@ -24,8 +24,8 @@ if __name__ == "__main__":
     input_str = f.readline()
     i = 0
     input_str += '#'
-    input_str = input_str.replace('\n','')
-    input_str = input_str.replace('\r','')
+    input_str = input_str.replace('\n', '')
+    input_str = input_str.replace('\r', '')
     stack.append('#')
     while True:
         if stack[len(stack)-1] in m:
@@ -51,7 +51,7 @@ if __name__ == "__main__":
                 print('E')
                 break
         else:
-            if m[stack[len(stack)-2]][input_str[i]] == 1:
+            if input_str[i] in m and m[stack[len(stack)-2]][input_str[i]] == 1:
                 if (stack[len(stack)-2] == '+' or stack[len(stack)-2] == '*') and len(stack) >= 3 and stack[len(stack)-1] == 'E' and stack[len(stack)-3] == 'E':
                     stack.pop()
                     stack.pop()
@@ -61,7 +61,7 @@ if __name__ == "__main__":
                 else:
                     print('RE')
                     break
-            elif m[stack[len(stack)-2]][input_str[i]] == -1 or m[stack[len(stack)-2]][input_str[i]] == 0:
+            elif input_str[i] in m and m[stack[len(stack)-2]][input_str[i]] == -1 or m[stack[len(stack)-2]][input_str[i]] == 0:
                 stack.append(input_str[i])
                 if input_str[i] == '#':
                     break
