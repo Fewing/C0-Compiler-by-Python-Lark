@@ -1,0 +1,31 @@
+
+start : bool_expr
+    | assign_expr
+
+?assign_expr  : NAME "=" cal_expr    -> assign_var 
+
+?bool_expr : cal_expr "==" cal_expr -> equl
+    | cal_expr "!=" cal_expr ->neq
+    | cal_expr "<" cal_expr ->lt
+    | cal_expr ">" cal_expr ->gt
+    | cal_expr "<=" cal_expr ->le
+    | cal_expr ">=" cal_expr ->ge
+
+?cal_expr: product
+    | cal_expr "+" product   -> add
+    | cal_expr "-" product   -> sub
+
+?product: atom
+    | product "*" atom  -> mul
+    | product "/" atom  -> div
+
+?atom: NUMBER           -> number
+     | "-" atom         -> neg
+     | NAME             -> var
+     | "(" cal_expr ")"
+
+
+%import common.CNAME -> NAME
+%import common.NUMBER
+%import common.WS_INLINE
+%ignore WS_INLINE
