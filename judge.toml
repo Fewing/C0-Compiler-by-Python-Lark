@@ -1,7 +1,7 @@
-[jobs.opg]
+[jobs.c0]
 
 image = { source = "dockerfile", path = ".", tag = "pascal-lex-example" }
 
 run = [
-  "python opg.py $input",
+  "python C0-lark/main.py $input -o $asm",
 ]

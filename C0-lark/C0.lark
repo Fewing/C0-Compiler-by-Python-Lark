@@ -1,14 +1,18 @@
 start : program
 //类型
 ty: "int" -> int
-    |"void" ->void
+    | "double" -> double
+    | "void" -> void
 
 //程序
 program : decl_stmt* function*
+
 //函数
 function_param : "const"? NAME ":" ty
-function_param_list : function_param ("," function_param)*
+?function_param_list : function_param ("," function_param)*
 function : "fn" NAME "(" function_param_list? ")" "->" ty block_stmt
+
+
 //语句
 ?stmt : expr_stmt
     | decl_stmt
@@ -22,7 +26,7 @@ expr_stmt : expr ";"
 //声明语句
 let_decl_stmt : "let" NAME ":" ty ("=" expr)? ";"
 const_decl_stmt : "const" NAME ":" ty "=" expr ";"
-decl_stmt : let_decl_stmt | const_decl_stmt
+?decl_stmt : let_decl_stmt | const_decl_stmt
 //if语句
 if_stmt : "if" expr block_stmt ("else" (block_stmt | if_stmt))?
 //while语句
@@ -36,19 +40,21 @@ empty_stmt : ";"
 
 
 //表达式
-expr : bool_expr
+?expr : bool_expr
     | var_expr
     | assign_expr
-    //| as_expr
+    | as_expr
     | call_expr
     | str_expr
 //调用表达式
 call_param_list : expr ("," expr)*
-call_expr : NAME "(" call_param_list? ")"       ->call_fn
+call_expr : NAME "(" call_param_list? ")"
 //字符串表达式
 str_expr : ESCAPED_STRING
 //赋值表达式
-?assign_expr  : NAME "=" var_expr    -> assign_var 
+?assign_expr  : NAME "=" var_expr
+//类型转换
+as_expr : var_expr "as" ty
 //布尔
 ?bool_expr : expr "==" expr -> equl
     | expr "!=" expr ->neq
@@ -77,4 +83,8 @@ str_expr : ESCAPED_STRING
 %import common.ESCAPED_STRING
 %import common.WS_INLINE
 %ignore WS_INLINE
+//注释
+COMMENT: "//" /[^\n]/*
+%ignore COMMENT
+
 %ignore "\n"

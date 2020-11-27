@@ -1,30 +1,20 @@
 from lark import Lark
+import sys
 
-f_lark = open('test.lark')
-lark = f_lark.read()
-l = Lark(lark)
-res = l.parse('''
-fn fib(x: int) -> int {
-    if x<=1 {
-        return 1;
-    }
-    let result: int = fib(x - 1);
-    result = result + fib(x - 2);
-    return result;
-}
+if __name__ == "__main__":
+    input_path = sys.argv[1]
+    input_file = open(input_path)
+    input_str = input_file.read()
 
-fn main() -> int {
-    let i: int = 0;
-    let j: int;
-    j = getint();
-    while i < j {
-        putint(i);
-        putchar(32);
-        putint(fib(i));
-        putln();
-        i = i + 1;
-    }
-    return 0;
-}
-''')
-print(res.pretty())
+    output_path = sys.argv[3]
+    ouput_file = open(output_path,'w')
+
+    lark_file = open('C0.lark')
+    lark_str = lark_file.read()
+    lark = Lark(lark_str)
+
+    res = lark.parse(input_str)
+    ouput_file.write(res.pretty())
+
+    input_file.close()
+    ouput_file.close()
