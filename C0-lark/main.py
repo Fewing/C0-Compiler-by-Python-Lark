@@ -9,7 +9,7 @@ if __name__ == "__main__":
     output_path = sys.argv[3]
     ouput_file = open(output_path,'w')
 
-    lark_file = open('C0.lark')
+    lark_file = open('C0-lark/C0.lark')
     lark_str = lark_file.read()
     lark = Lark(lark_str)
 
