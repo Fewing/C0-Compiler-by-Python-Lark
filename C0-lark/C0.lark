@@ -62,6 +62,7 @@ as_expr : var_expr "as" ty
     | expr ">" expr ->gt
     | expr "<=" expr ->le
     | expr ">=" expr ->ge
+    | "(" bool_expr ")"
 //数值
 ?var_expr: product
     | var_expr "+" product   -> add
