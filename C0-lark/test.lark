@@ -1,16 +1,57 @@
 
-start : bool_expr
+start : stmt
+//类型
+ty: "int"|"void"
+
+
+//语句
+stmt : expr_stmt
+    | decl_stmt
+    | if_stmt
+    | while_stmt
+    | return_stmt
+    | block_stmt
+    | empty_stmt
+//表达式语句
+expr_stmt : expr ";"
+//声明语句
+let_decl_stmt : "let" NAME ":" ty ("=" expr)? ";"
+const_decl_stmt : "const" NAME ":" ty "=" expr ";"
+decl_stmt : let_decl_stmt | const_decl_stmt
+//if语句
+if_stmt : "if" expr block_stmt ("else" (block_stmt | if_stmt))?
+//while语句
+while_stmt : "while" expr block_stmt
+//return语句
+return_stmt : "return" expr? ";"
+//代码块
+block_stmt : "{" stmt* "}"
+//空语句
+empty_stmt : ";"
+
+
+//表达式
+expr : bool_expr
+    | cal_expr
     | assign_expr
-
+    //| as_expr
+    | call_expr
+    | str_expr
+//调用表达式
+call_param_list : expr ("," expr)*
+call_expr : NAME "(" call_param_list? ")"        ->call_fn
+//字符串表达式
+str_expr : ESCAPED_STRING
+//赋值表达式
 ?assign_expr  : NAME "=" cal_expr    -> assign_var 
-
-?bool_expr : cal_expr "==" cal_expr -> equl
-    | cal_expr "!=" cal_expr ->neq
-    | cal_expr "<" cal_expr ->lt
-    | cal_expr ">" cal_expr ->gt
-    | cal_expr "<=" cal_expr ->le
-    | cal_expr ">=" cal_expr ->ge
-
+//布尔
+?bool_expr : expr "==" expr -> equl
+    | expr "!=" expr ->neq
+    | expr "<" expr ->lt
+    | expr ">" expr ->gt
+    | expr "<=" expr ->le
+    | expr ">=" expr ->ge
+//数值
 ?cal_expr: product
     | cal_expr "+" product   -> add
     | cal_expr "-" product   -> sub
@@ -27,5 +68,7 @@ start : bool_expr
 
 %import common.CNAME -> NAME
 %import common.NUMBER
+%import common.ESCAPED_STRING
 %import common.WS_INLINE
 %ignore WS_INLINE
+%ignore "\n"
