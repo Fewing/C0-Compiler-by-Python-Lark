@@ -1,11 +1,16 @@
-
-start : stmt
+start : program
 //类型
-ty: "int"|"void"
+ty: "int" -> int
+    |"void" ->void
 
-
+//程序
+program : decl_stmt* function*
+//函数
+function_param : "const"? NAME ":" ty
+function_param_list : function_param ("," function_param)*
+function : "fn" NAME "(" function_param_list? ")" "->" ty block_stmt
 //语句
-stmt : expr_stmt
+?stmt : expr_stmt
     | decl_stmt
     | if_stmt
     | while_stmt
@@ -32,18 +37,18 @@ empty_stmt : ";"
 
 //表达式
 expr : bool_expr
-    | cal_expr
+    | var_expr
     | assign_expr
     //| as_expr
     | call_expr
     | str_expr
 //调用表达式
 call_param_list : expr ("," expr)*
-call_expr : NAME "(" call_param_list? ")"        ->call_fn
+call_expr : NAME "(" call_param_list? ")"       ->call_fn
 //字符串表达式
 str_expr : ESCAPED_STRING
 //赋值表达式
-?assign_expr  : NAME "=" cal_expr    -> assign_var 
+?assign_expr  : NAME "=" var_expr    -> assign_var 
 //布尔
 ?bool_expr : expr "==" expr -> equl
     | expr "!=" expr ->neq
@@ -52,9 +57,9 @@ str_expr : ESCAPED_STRING
     | expr "<=" expr ->le
     | expr ">=" expr ->ge
 //数值
-?cal_expr: product
-    | cal_expr "+" product   -> add
-    | cal_expr "-" product   -> sub
+?var_expr: product
+    | var_expr "+" product   -> add
+    | var_expr "-" product   -> sub
 
 ?product: atom
     | product "*" atom  -> mul
@@ -63,7 +68,8 @@ str_expr : ESCAPED_STRING
 ?atom: NUMBER           -> number
      | "-" atom         -> neg
      | NAME             -> var
-     | "(" cal_expr ")"
+     | "(" var_expr ")"
+     | call_expr
 
 
 %import common.CNAME -> NAME
