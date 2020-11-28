@@ -1,0 +1,23 @@
+// 读入一个有符号整数
+fn getint() -> int;
+
+// 读入一个浮点数
+fn getdouble() -> double;
+
+// 读入一个字符
+fn getchar() -> int;
+
+// 输出一个整数
+fn putint(int) -> void;
+
+// 输出一个浮点数
+fn putdouble(double) -> void;
+
+// 输出一个字符
+fn putchar(int) -> void;
+
+// 将编号为这个整数的全局常量看作字符串输出
+fn putstr(int) -> void;
+
+// 输出一个换行
+fn putln() -> void;
