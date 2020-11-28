@@ -47,7 +47,7 @@ empty_stmt : ";"
     | call_expr
     | str_expr
 //调用表达式
-call_param_list : var_expr|str_expr ("," var_expr|str_expr)*
+call_param_list : (var_expr|str_expr) ("," var_expr|str_expr)*
 call_expr : IDENT "(" call_param_list? ")"
 //字符串表达式
 str_expr : ESCAPED_STRING
