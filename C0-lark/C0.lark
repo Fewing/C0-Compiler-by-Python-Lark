@@ -28,9 +28,9 @@ let_decl_stmt : "let" IDENT ":" ty ("=" expr)? ";"
 const_decl_stmt : "const" IDENT ":" ty "=" expr ";"
 ?decl_stmt : let_decl_stmt | const_decl_stmt
 //if语句
-if_stmt : "if" expr block_stmt ("else" (block_stmt | if_stmt))?
+if_stmt : "if" bool_expr block_stmt ("else" (block_stmt | if_stmt))?
 //while语句
-while_stmt : "while" expr block_stmt
+while_stmt : "while" bool_expr block_stmt
 //return语句
 return_stmt : "return" expr? ";"
 //代码块
@@ -49,6 +49,14 @@ empty_stmt : ";"
 //调用表达式
 call_param_list : (var_expr|str_expr) ("," var_expr|str_expr)*
 call_expr : IDENT "(" call_param_list? ")"
+    | "getint" "(" call_param_list? ")"
+    | "getdouble" "(" call_param_list? ")"
+    | "getchar" "(" call_param_list? ")"
+    | "putint" "(" call_param_list? ")"
+    | "putdouble" "(" call_param_list? ")"
+    | "putchar" "(" call_param_list? ")"
+    | "putstr" "(" call_param_list? ")"
+    | "putln" "(" call_param_list? ")"
 //字符串表达式
 str_expr : ESCAPED_STRING
 //赋值表达式

@@ -1,6 +1,11 @@
+import struct
+
+
 class C0ASM():
 
-    instructions = {
+    __output = bytearray()
+
+    __instructions = {
         'nop': 0x00,
         'push': 0x01,
         'pop': 0x02,
@@ -61,6 +66,64 @@ class C0ASM():
         'panic': 0xfe,
     }
 
-    def tobinary(self, op, op_num):
-        res = self.instructions[op]
-        return res
+    def __init__(self, **kw):
+        s = struct.Struct('> I I')
+        self.__output += s.pack(0x72303b3e, 0x00000001)
+
+    def globaldef(self, value_list):
+        s = struct.Struct('> I')
+        self.__output += s.pack(len(value_list))
+        for value in value_list:
+            if value['type'] == 'int':
+                s = struct.Struct('> B I q')
+                self.__output += s.pack(value['is_const'], 8, value['value'])
+
+    def functiondef(self, func_list):
+        s = struct.Struct('> I')
+        self.__output += s.pack(len(func_list))
+        for func in func_list:
+            s = struct.Struct('> I I I I I')
+            self.__output += s.pack(func['name'], func['return_slots'],
+                                    func['param_slots'], func['loc_slots'], len(func['instructions']))
+            for ins in func['instructions']:
+                if 'op_32' in ins:
+                    self.addop(ins['ins'], op_32=ins['op_32'])
+                elif 'op_64' in ins:
+                    self.addop(ins['ins'], op_32=ins['op_64'])
+                else:
+                    self.addop(ins['ins'])
+
+    def addop(self, ins, op_32=None, op_64=None):
+        ins = self.__instructions[ins]
+        if op_32 != None:
+            s = struct.Struct('> B i')
+            self.__output += s.pack(ins, op_32)
+        elif op_64 != None:
+            s = struct.Struct('> B q')
+            self.__output += s.pack(ins, op_64)
+        else:
+            s = struct.Struct('> B')
+            self.__output += s.pack(ins)
+
+    def get(self):
+        return self.__output
+
+
+if __name__ == "__main__":
+    f = open('test.o', 'wb')
+    asm = C0ASM()
+    globaldef = [
+        {'type': 'int', 'is_const': 0, 'value': 0},
+        {'type': 'int', 'is_const': 1, 'value': 0},
+    ]
+    funcdef = [
+        {'name': 1, 'return_slots': 0, 'param_slots': 0, 'loc_slots': 0,
+            'instructions': [{'ins': 'push', 'op_64': 1},
+                             {'ins': 'push', 'op_64': 2},
+                             {'ins': 'add.i'},
+                             {'ins': 'neg.i'}]},
+    ]
+    asm.globaldef(globaldef)
+    asm.functiondef(funcdef)
+    f.write(asm.get())
+    f.close()

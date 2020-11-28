@@ -1,6 +1,8 @@
 from .table import ident_table
 from lark import Tree
 
+def program(tree :Tree):
+    pass
 def let_decl_stmt(tree :Tree):
     key = str(tree.children[1].data) + '-' + \
         str(tree.children[0].value)

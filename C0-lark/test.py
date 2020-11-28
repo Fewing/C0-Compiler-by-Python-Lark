@@ -3,9 +3,14 @@ from lark import Lark, Tree
 import utils.postfunc as postfn
 import utils.prefunc as prefn
 
+globaldef = []
+funcdef = []
+
 
 def codegen(tree: Tree):
     if isinstance(tree, Tree):
+        if tree.data == 'program':
+            prefn.program()
         if tree.data == 'block_stmt':
             prefn.block_stmt(tree)
         if tree.data == 'let_decl_stmt':
