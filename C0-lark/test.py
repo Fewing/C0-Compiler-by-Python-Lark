@@ -1,31 +1,6 @@
-from lark import Lark, Tree
-
-import utils.postfunc as postfn
-import utils.prefunc as prefn
-
-globaldef = []
-funcdef = []
-
-
-def codegen(tree: Tree):
-    if isinstance(tree, Tree):
-        if tree.data == 'program':
-            prefn.program()
-        if tree.data == 'block_stmt':
-            prefn.block_stmt(tree)
-        if tree.data == 'let_decl_stmt':
-            prefn.let_decl_stmt(tree)
-        if tree.data == 'const_decl_stmt':
-            prefn.const_decl_stmt(tree)
-        if tree.data == 'function':
-            prefn.function(tree)
-        for child in tree.children:
-            codegen(child)
-        if tree.data == 'block_stmt':
-            postfn.block_stmt(tree)
-    else:
-        pass
-
+from lark import Lark
+from utils.generator import Generator
+from utils.table import ident_table
 
 if __name__ == "__main__":
     # 输入
@@ -36,7 +11,10 @@ if __name__ == "__main__":
     lark_str = lark_file.read()
     lark = Lark(lark_str)
     parse_tree = lark.parse(input_str)
-    print(parse_tree.pretty())
-    # 代码生成
-    codegen(parse_tree)
+    #print(parse_tree.pretty())
+    # 代码生成4
+    gen = Generator()
+    gen.codegen(parse_tree)
+    print(gen.globaldef)
+    print(gen.funcdef)
     input_file.close()

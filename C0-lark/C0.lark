@@ -9,7 +9,7 @@ program : decl_stmt* function*
 
 //函数
 function_param : "const"? IDENT ":" ty
-?function_param_list : function_param ("," function_param)*
+function_param_list : function_param ("," function_param)*
 function : "fn" IDENT "(" function_param_list? ")" "->" ty block_stmt
 
 

@@ -74,9 +74,8 @@ class C0ASM():
         s = struct.Struct('> I')
         self.__output += s.pack(len(value_list))
         for value in value_list:
-            if value['type'] == 'int':
-                s = struct.Struct('> B I q')
-                self.__output += s.pack(value['is_const'], 8, value['value'])
+            s = struct.Struct('> B I q')
+            self.__output += s.pack(value['is_const'], 8, value['value'])
 
     def functiondef(self, func_list):
         s = struct.Struct('> I')
