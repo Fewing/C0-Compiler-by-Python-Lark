@@ -1,3 +1,4 @@
+import json
 from lark import Lark
 from utils.generator import Generator
 from utils.table import ident_table
@@ -12,9 +13,9 @@ if __name__ == "__main__":
     lark = Lark(lark_str)
     parse_tree = lark.parse(input_str)
     #print(parse_tree.pretty())
-    # 代码生成4
+    # 代码生成
     gen = Generator()
     gen.codegen(parse_tree)
-    print(gen.globaldef)
-    print(gen.funcdef)
+    print(json.dumps(gen.globaldef, indent=4, sort_keys=True))
+    print(json.dumps(gen.funcdef, indent=4, sort_keys=True))
     input_file.close()

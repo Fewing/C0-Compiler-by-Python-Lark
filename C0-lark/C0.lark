@@ -49,14 +49,14 @@ empty_stmt : ";"
 //调用表达式
 call_param_list : (var_expr|str_expr) ("," var_expr|str_expr)*
 call_expr : IDENT "(" call_param_list? ")"
-    | "getint" "(" call_param_list? ")"
-    | "getdouble" "(" call_param_list? ")"
-    | "getchar" "(" call_param_list? ")"
-    | "putint" "(" call_param_list? ")"
-    | "putdouble" "(" call_param_list? ")"
-    | "putchar" "(" call_param_list? ")"
-    | "putstr" "(" call_param_list? ")"
-    | "putln" "(" call_param_list? ")"
+    | "getint" "(" call_param_list? ")" -> getint
+    | "getdouble" "(" call_param_list? ")" -> getdouble
+    | "getchar" "(" call_param_list? ")" -> getchar
+    | "putint" "(" call_param_list? ")" -> putint
+    | "putdouble" "(" call_param_list? ")"-> putdouble
+    | "putchar" "(" call_param_list? ")" -> putchar
+    | "putstr" "(" call_param_list? ")" -> putstr
+    | "putln" "(" call_param_list? ")" -> putln
 //字符串表达式
 str_expr : ESCAPED_STRING
 //赋值表达式
@@ -87,6 +87,7 @@ as_expr : var_expr "as" ty
      | call_expr
 
 
+%import common.CNAME -> FNCIDENT
 %import common.CNAME -> IDENT
 %import common.NUMBER
 %import common.ESCAPED_STRING
