@@ -10,7 +10,7 @@ if __name__ == "__main__":
     input_file = open(input_path)
     input_str = input_file.read()
     # 生成语法树
-    lark_file = open('C0.lark',encoding='utf-8')
+    lark_file = open('C0-lark/C0.lark',encoding='utf-8')
     lark_str = lark_file.read()
     lark = Lark(lark_str)
     parse_tree = lark.parse(input_str)
