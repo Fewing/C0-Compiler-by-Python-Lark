@@ -14,7 +14,7 @@ fn main() -> int {
     let i: int = 0;
     let j: int = 5;
     j = getint();
-    while i < j {
+    while (i < j) {
         putint(i);
         putchar(32);
         putstr("hello world!");
