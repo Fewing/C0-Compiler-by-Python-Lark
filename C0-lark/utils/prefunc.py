@@ -12,6 +12,8 @@ def let_decl_stmt(tree: Tree, globaldef: list, funcdef: list):
     if key in ident_table[-1]:
         raise RuntimeError('Duplicate declaration: '+key)
     else:
+        if tree.children[1].data == 'void':
+            raise RuntimeError('VoidTypeVariable: '+key)
         if len(ident_table) == 1:  # 全局变量
             g_var = {}
             g_var['type'] = tree.children[1].data
@@ -58,6 +60,8 @@ def const_decl_stmt(tree: Tree, globaldef: list, funcdef: list):
     if key in ident_table[-1]:
         raise RuntimeError('Duplicate declaration: '+key)
     else:
+        if tree.children[1].data == 'void':
+            raise RuntimeError('VoidTypeVariable: '+key)
         if len(ident_table) == 1:  # 全局变量
             g_var = {}
             g_var['type'] = tree.children[1].data
@@ -107,7 +111,7 @@ def function(tree: Tree, funcdef: list, globaldef: list):
     else:
         ret_type = tree.children[1].data
     key = str(tree.children[0].value)
-    if key in ident_table[-1]:
+    if key in func_table:
         raise RuntimeError('Duplicate declaration: '+key)
     else:
         g_var = {}
@@ -161,6 +165,8 @@ def assign_expr(tree: Tree, funcdef: list):
     for table in reversed(ident_table):
         if key in table:
             ident = table[key]
+            if ident['const']:
+                raise RuntimeError('can not assign const:' + key)
             if ident['para']:
                 funcdef[-1]['instructions'].append({
                     'ins': 'arga',
