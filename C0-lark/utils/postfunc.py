@@ -59,5 +59,5 @@ def str_exper(token: Token, funcdef: list, globaldef: list):
     globaldef.append(g_var)
     funcdef[-1]['instructions'].append({
         'ins': 'push',
-        'op_32': loc,
+        'op_64': loc,
     })

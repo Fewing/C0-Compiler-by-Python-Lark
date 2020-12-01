@@ -1,41 +1,30 @@
-from lark import Lark ,Tree
 import sys
-
-import utils.postfunc as postfn
-import utils.prefunc as prefn
-
-def codegen(tree: Tree):
-    if isinstance(tree, Tree):
-        if tree.data == 'block_stmt':
-            prefn.block_stmt(tree)
-        if tree.data == 'let_decl_stmt':
-            prefn.let_decl_stmt(tree)
-        if tree.data == 'const_decl_stmt':
-            prefn.const_decl_stmt(tree)
-        if tree.data == 'function':
-            prefn.function(tree)
-        for child in tree.children:
-            codegen(child)
-        if tree.data == 'block_stmt':
-            postfn.block_stmt(tree)
-    else:
-        pass
+from lark import Lark
+from utils.generator import Generator
+from utils.table import ident_table
+from utils.asm import C0ASM
 
 if __name__ == "__main__":
+    # 输入
     input_path = sys.argv[1]
     input_file = open(input_path)
     input_str = input_file.read()
-
-    output_path = sys.argv[3]
-    ouput_file = open(output_path,'w')
-
-    lark_file = open('C0-lark/C0.lark')
+    # 生成语法树
+    lark_file = open('C0.lark',encoding='utf-8')
     lark_str = lark_file.read()
     lark = Lark(lark_str)
-
     parse_tree = lark.parse(input_str)
-    codegen(parse_tree)
-    ouput_file.write(parse_tree.pretty())
-
+    # 代码生成
+    gen = Generator()
+    gen.codegen(parse_tree)
+    #汇编
+    c0asm = C0ASM()
+    c0asm.asm_globaldef(value_list=gen.globaldef)
+    c0asm.asm_functiondef(func_list=gen.funcdef)
+    #输出
+    obj = c0asm.get()
+    output_path = sys.argv[3]
+    ouput_file = open(output_path,'wb')
+    ouput_file.write(obj)
     input_file.close()
     ouput_file.close()

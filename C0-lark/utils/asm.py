@@ -81,8 +81,9 @@ class C0ASM():
                 s = struct.Struct('> B I')
                 self.__output += s.pack(value['is_const'], len(value['value']))
                 for ch in value['value']:
-                    s = struct.Struct('> c')
-                    self.__output += s.pack(ch)
+                    s = struct.Struct('> b')
+                    temp = ord(ch)
+                    self.__output += s.pack(temp)
 
     def asm_functiondef(self, func_list):
         s = struct.Struct('> I')
@@ -95,7 +96,7 @@ class C0ASM():
                 if 'op_32' in ins:
                     self.addop(ins['ins'], op_32=ins['op_32'])
                 elif 'op_64' in ins:
-                    self.addop(ins['ins'], op_32=ins['op_64'])
+                    self.addop(ins['ins'], op_64=ins['op_64'])
                 else:
                     self.addop(ins['ins'])
 

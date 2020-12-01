@@ -126,7 +126,7 @@ class Generator():
                 self.funcdef[-1]['instructions'].append({'ins':'neg.i'})
         else: #叶节点
             if tree.type == 'INT':
-                self.funcdef[-1]['instructions'].append({'ins':'push','op_64':tree.value})
+                self.funcdef[-1]['instructions'].append({'ins':'push','op_64':int(tree.value)})
             if tree.type == 'IDENT':
                 postfn.ident(tree,self.funcdef)
             if tree.type == 'FLOAT':
