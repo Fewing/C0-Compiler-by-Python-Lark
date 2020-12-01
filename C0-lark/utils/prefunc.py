@@ -125,6 +125,7 @@ def function(tree: Tree, funcdef: list):
             'loc': func['name'],
             'para_num': para_num,
         }
+    tree.children[0].type="FNCIDENT"
 
 
 def function_param(tree: Tree, funcdef: list):
@@ -141,6 +142,11 @@ def function_param(tree: Tree, funcdef: list):
         'global': False,
         'func': False,
     }
+    tree.children[0].type="PARAIDENT"
+
+def return_stmt(tree: Tree, funcdef: list):
+    if funcdef[-1]['return_slots'] != 0:
+        funcdef[-1]['instructions'].append({'ins':'arga','op_32':0})
 
 def assign_expr(tree: Tree, funcdef: list):
     key = str(tree.children[0].value)

@@ -13,6 +13,7 @@ class Generator():
                 }, ]
     __next_block = True  # 函数传参后，下一个block_stmt不执行
     __exper = False
+    __if_block = False
 
     def codegen(self, tree: Tree):
         if isinstance(tree, Tree):
@@ -21,6 +22,9 @@ class Generator():
                     prefn.block_stmt(tree)
                 else:
                     self.__next_block = True
+                if self.__if_block:
+                    self.funcdef[-1]['instructions'].append({'ins':'br.true','op_32':1})
+                    self.funcdef[-1]['instructions'].append({'ins':'br','op_32':0,'fill':True})
             if tree.data == 'let_decl_stmt':
                 prefn.let_decl_stmt(tree, self.globaldef, self.funcdef)
                 if len(tree.children)==3:
@@ -29,6 +33,8 @@ class Generator():
                 prefn.const_decl_stmt(tree, self.globaldef, self.funcdef)
                 if len(tree.children)==3:
                     self.__exper = True
+            if tree.data == 'return_stmt':
+                prefn.return_stmt(tree, self.funcdef)
             if tree.data == 'function':
                 prefn.function(tree, self.funcdef)
             if tree.data == 'function_param_list':
@@ -42,14 +48,29 @@ class Generator():
                 prefn.call_expr(tree,self.funcdef)
             if tree.data == 'assign_expr':
                 prefn.assign_expr(tree,self.funcdef)
+            if tree.data == 'if_stmt':
+                self.__if_block = True
+                self.__exper = True
             #前序
             for child in tree.children:
                 self.codegen(child)
+            if tree.data == 'program':
+                self.funcdef[0]['instructions'].append({'ins':'stackalloc','op_32':1})
+                self.funcdef[0]['instructions'].append({'ins':'call','op_32':func_table['main']['loc']})
+                self.funcdef[0]['instructions'].append({'ins':'popn','op_32':1})
             #后序
             if tree.data == 'expr_stmt':
                 self.__exper = False
             if tree.data == 'block_stmt':
                 postfn.block_stmt(tree)
+                if self.__if_block:
+                    i = 0 
+                    for ins in reversed(self.funcdef[-1]['instructions']):
+                        if 'fill' in ins:
+                            ins['op_32'] = i
+                            ins.pop('fill')
+                        i += 1
+                    self.__if_block = False
             if tree.data == 'let_decl_stmt':
                 if len(tree.children) == 3:
                     self.funcdef[-1]['instructions'].append({'ins':'store.64'})
@@ -57,10 +78,31 @@ class Generator():
             if tree.data == 'const_decl_stmt':
                 self.funcdef[-1]['instructions'].append({'ins':'store.64'})
                 self.__exper =False
+            if tree.data == 'return_stmt':
+                postfn.return_stmt(tree,self.funcdef)
             if tree.data == 'assign_expr':
                 self.funcdef[-1]['instructions'].append({'ins':'store.64'})
             if tree.data == 'call_expr':
                 postfn.call_expr(tree,self.funcdef)
+            if tree.data == 'equl':
+                self.funcdef[-1]['instructions'].append({'ins':'cmp.i'})
+                self.funcdef[-1]['instructions'].append({'ins':'not'})
+            if tree.data == 'neq':
+                self.funcdef[-1]['instructions'].append({'ins':'cmp.i'})
+            if tree.data == 'lt':
+                self.funcdef[-1]['instructions'].append({'ins':'cmp.i'})
+                self.funcdef[-1]['instructions'].append({'ins':'set.lt'})
+            if tree.data == 'gt':
+                self.funcdef[-1]['instructions'].append({'ins':'cmp.i'})
+                self.funcdef[-1]['instructions'].append({'ins':'set.gt'})
+            if tree.data == 'le':
+                self.funcdef[-1]['instructions'].append({'ins':'cmp.i'})
+                self.funcdef[-1]['instructions'].append({'ins':'set.gt'})
+                self.funcdef[-1]['instructions'].append({'ins':'not'})
+            if tree.data == 'ge':
+                self.funcdef[-1]['instructions'].append({'ins':'cmp.i'})
+                self.funcdef[-1]['instructions'].append({'ins':'set.lt'})
+                self.funcdef[-1]['instructions'].append({'ins':'not'})
             if tree.data == 'add':
                 self.funcdef[-1]['instructions'].append({'ins':'add.i'})
             if tree.data == 'sub':
@@ -72,8 +114,9 @@ class Generator():
             if tree.data == 'neg':
                 self.funcdef[-1]['instructions'].append({'ins':'neg.i'})
         else: #叶节点
-            if self.__exper:
-                if tree.type == 'NUMBER':
-                    self.funcdef[-1]['instructions'].append({'ins':'push','op_64':tree.value})
-                if tree.type == 'IDENT':
-                    postfn.ident(tree,self.funcdef)
+            if tree.type == 'INT':
+                self.funcdef[-1]['instructions'].append({'ins':'push','op_64':tree.value})
+            if tree.type == 'IDENT':
+                postfn.ident(tree,self.funcdef)
+            if tree.type == 'FLOAT':
+                pass

@@ -6,6 +6,10 @@ from .stdlib import lib_table, code_gen
 def block_stmt(tree: Tree):
     ident_table.pop()
 
+def return_stmt(tree: Tree, funcdef: list):
+    if funcdef[-1]['return_slots'] != 0:
+        funcdef[-1]['instructions'].append({'ins':'store.64'})
+    funcdef[-1]['instructions'].append({'ins':'ret'})
 
 def call_expr(tree: Tree, funcdef: list):
     key = str(tree.children[0].value)
