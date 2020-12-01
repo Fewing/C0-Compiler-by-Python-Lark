@@ -71,6 +71,8 @@ class C0ASM():
         self.__output += s.pack(0x72303b3e, 0x00000001)
 
     def asm_globaldef(self, value_list):
+        if len(value_list) == 0:
+            return
         s = struct.Struct('> I')
         self.__output += s.pack(len(value_list))
         for value in value_list:
