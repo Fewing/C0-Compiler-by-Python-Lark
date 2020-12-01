@@ -91,13 +91,8 @@ class C0ASM():
         s = struct.Struct('> I')
         self.__output += s.pack(len(func_list))
         for func in func_list:
-            if func['name'] == 0:
-                s = struct.Struct('> I I I')
-                self.__output += s.pack(func['name'],
-                                        func['loc_slots'], len(func['instructions']))
-            else:
-                s = struct.Struct('> I I I I I')
-                self.__output += s.pack(func['name'], func['return_slots'],
+            s = struct.Struct('> I I I I I')
+            self.__output += s.pack(func['name'], func['return_slots'],
                                         func['param_slots'], func['loc_slots'], len(func['instructions']))
             for ins in func['instructions']:
                 if 'op_32' in ins:

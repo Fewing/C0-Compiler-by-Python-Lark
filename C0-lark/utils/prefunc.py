@@ -32,8 +32,8 @@ def let_decl_stmt(tree: Tree, globaldef: list, funcdef: list):
                     'ins': 'global',
                     'op_32': loc,
                 })
-                tree.children[0].type="ASSIIDENT"
-            
+                tree.children[0].type = "ASSIIDENT"
+
         else:  # 局部变量
             loc = funcdef[-1]['loc_slots']
             funcdef[-1]['loc_slots'] += 1
@@ -50,7 +50,7 @@ def let_decl_stmt(tree: Tree, globaldef: list, funcdef: list):
                     'ins': 'loca',
                     'op_32': loc,
                 })
-                tree.children[0].type="ASSIIDENT"
+                tree.children[0].type = "ASSIIDENT"
 
 
 def const_decl_stmt(tree: Tree, globaldef: list, funcdef: list):
@@ -92,14 +92,14 @@ def const_decl_stmt(tree: Tree, globaldef: list, funcdef: list):
                 'ins': 'loca',
                 'op_32': loc,
             })
-        tree.children[0].type="ASSIIDENT"
+        tree.children[0].type = "ASSIIDENT"
 
 
 def block_stmt(tree: Tree):
     ident_table.append({})
 
 
-def function(tree: Tree, funcdef: list):
+def function(tree: Tree, funcdef: list, globaldef: list):
     para_num = 0
     if tree.children[1].data == 'function_param_list':
         ret_type = tree.children[2].data
@@ -110,8 +110,14 @@ def function(tree: Tree, funcdef: list):
     if key in ident_table[-1]:
         raise RuntimeError('Duplicate declaration: '+key)
     else:
+        g_var = {}
+        g_var['type'] = 'string'
+        g_var['is_const'] = 1
+        g_var['value'] = key
+        name = len(globaldef)
+        globaldef.append(g_var)
         func = {}
-        func['name'] = len(funcdef)
+        func['name'] = name
         func['loc_slots'] = 0
         func['return_slots'] = 0
         func['param_slots'] = 0
@@ -125,7 +131,7 @@ def function(tree: Tree, funcdef: list):
             'loc': func['name'],
             'para_num': para_num,
         }
-    tree.children[0].type="FNCIDENT"
+    tree.children[0].type = "FNCIDENT"
 
 
 def function_param(tree: Tree, funcdef: list):
@@ -142,11 +148,13 @@ def function_param(tree: Tree, funcdef: list):
         'global': False,
         'func': False,
     }
-    tree.children[0].type="PARAIDENT"
+    tree.children[0].type = "PARAIDENT"
+
 
 def return_stmt(tree: Tree, funcdef: list):
     if funcdef[-1]['return_slots'] != 0:
-        funcdef[-1]['instructions'].append({'ins':'arga','op_32':0})
+        funcdef[-1]['instructions'].append({'ins': 'arga', 'op_32': 0})
+
 
 def assign_expr(tree: Tree, funcdef: list):
     key = str(tree.children[0].value)
@@ -168,9 +176,10 @@ def assign_expr(tree: Tree, funcdef: list):
                     'ins': 'loca',
                     'op_32': ident['loc'],
                 })
-            tree.children[0].type="ASSIIDENT"
+            tree.children[0].type = "ASSIIDENT"
             return
-    raise RuntimeError('ident '+ key + ' is not declared')
+    raise RuntimeError('ident ' + key + ' is not declared')
+
 
 def call_expr(tree: Tree, funcdef: list):
     key = str(tree.children[0].value)

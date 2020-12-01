@@ -3,6 +3,9 @@ from lark import Tree, Token
 from .stdlib import lib_table, code_gen
 
 
+def function(tree: Tree, funcdef: list):
+    funcdef[-1]['instructions'].append({'ins': 'ret'})
+
 def block_stmt(tree: Tree):
     ident_table.pop()
 
