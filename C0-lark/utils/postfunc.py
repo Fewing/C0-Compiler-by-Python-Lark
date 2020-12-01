@@ -21,7 +21,7 @@ def call_expr(tree: Tree, funcdef: list):
     elif key in lib_table:
         code_gen(key, funcdef)
     else:
-        raise RuntimeError(f'function {key} is not declared')
+        raise RuntimeError('function '+ key + ' is not declared')
 
 
 def ident(token: Token, funcdef: list):
@@ -47,7 +47,7 @@ def ident(token: Token, funcdef: list):
                 'ins': 'load.64',
             })
             return
-    raise RuntimeError(f'ident {token} is not declared')
+    raise RuntimeError('ident '+ token + ' is not declared')
 
 
 def str_exper(token: Token, funcdef: list, globaldef: list):

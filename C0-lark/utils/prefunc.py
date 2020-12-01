@@ -170,7 +170,7 @@ def assign_expr(tree: Tree, funcdef: list):
                 })
             tree.children[0].type="ASSIIDENT"
             return
-    raise RuntimeError(f'ident {key} is not declared')
+    raise RuntimeError('ident '+ key + ' is not declared')
 
 def call_expr(tree: Tree, funcdef: list):
     key = str(tree.children[0].value)
@@ -184,5 +184,5 @@ def call_expr(tree: Tree, funcdef: list):
     elif key in lib_table:
         add_ret(key, funcdef)
     else:
-        raise RuntimeError(f'function {key} is not declared')
+        raise RuntimeError('function ' + key + ' is not declared')
     tree.children[0].type = "FNCIDENT"
