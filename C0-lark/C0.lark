@@ -26,13 +26,13 @@ expr_stmt : expr ";"
 //声明语句
 let_decl_stmt : "let" IDENT ":" ty ("=" expr)? ";"
 const_decl_stmt : "const" IDENT ":" ty "=" expr ";"
-?decl_stmt : let_decl_stmt | const_decl_stmt
+?decl_stmt.10 : let_decl_stmt | const_decl_stmt
 //if语句
-if_stmt : "if" binary_expr block_stmt ("else" (block_stmt | if_stmt))?
+if_stmt.10 : "if" binary_expr block_stmt ("else" (block_stmt | if_stmt))?
 //while语句
-while_stmt : "while" binary_expr block_stmt
+while_stmt.10 : "while" binary_expr block_stmt
 //return语句
-return_stmt : "return" expr? ";"
+return_stmt.10 : "return" expr? ";"
 //代码块
 block_stmt : "{" stmt* "}"
 //空语句
