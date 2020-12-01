@@ -70,14 +70,21 @@ class C0ASM():
         s = struct.Struct('> I I')
         self.__output += s.pack(0x72303b3e, 0x00000001)
 
-    def globaldef(self, value_list):
+    def asm_globaldef(self, value_list):
         s = struct.Struct('> I')
         self.__output += s.pack(len(value_list))
         for value in value_list:
-            s = struct.Struct('> B I q')
-            self.__output += s.pack(value['is_const'], 8, value['value'])
+            if value['type']=='int':
+                s = struct.Struct('> B I q')
+                self.__output += s.pack(value['is_const'], 8, value['value'])
+            if value['type'] == 'string':
+                s = struct.Struct('> B I')
+                self.__output += s.pack(value['is_const'], len(value['value']))
+                for ch in value['value']:
+                    s = struct.Struct('> c')
+                    self.__output += s.pack(ch)
 
-    def functiondef(self, func_list):
+    def asm_functiondef(self, func_list):
         s = struct.Struct('> I')
         self.__output += s.pack(len(func_list))
         for func in func_list:

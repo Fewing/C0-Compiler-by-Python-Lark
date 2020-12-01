@@ -31,10 +31,7 @@ lib_table = {
 
 def add_ret(name: str, fundef: list):
     if lib_table[name]['para_num'] != 0:
-        fundef[-1]['instructions'].append({
-            'ins': 'stackalloc',
-            'op_32': lib_table[name]['para_num'],
-        })
+        pass
 
 
 def code_gen(name: str, fundef: list):

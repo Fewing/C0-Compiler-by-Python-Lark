@@ -13,7 +13,8 @@ class Generator():
                 }, ]
     __next_block = True  # 函数传参后，下一个block_stmt不执行
     __exper = False
-    __if_block = False
+    __if_block = False #if语句块标志
+    __while_block = False #while语句块标志
 
     def codegen(self, tree: Tree):
         if isinstance(tree, Tree):
@@ -25,14 +26,13 @@ class Generator():
                 if self.__if_block:
                     self.funcdef[-1]['instructions'].append({'ins':'br.true','op_32':1})
                     self.funcdef[-1]['instructions'].append({'ins':'br','op_32':0,'fill':True})
+                if self.__while_block:
+                    self.funcdef[-1]['instructions'].append({'ins':'br.true','op_32':1})
+                    self.funcdef[-1]['instructions'].append({'ins':'br','op_32':0,'fill':True})
             if tree.data == 'let_decl_stmt':
                 prefn.let_decl_stmt(tree, self.globaldef, self.funcdef)
-                if len(tree.children)==3:
-                    self.__exper = True
             if tree.data == 'const_decl_stmt':
                 prefn.const_decl_stmt(tree, self.globaldef, self.funcdef)
-                if len(tree.children)==3:
-                    self.__exper = True
             if tree.data == 'return_stmt':
                 prefn.return_stmt(tree, self.funcdef)
             if tree.data == 'function':
@@ -50,7 +50,9 @@ class Generator():
                 prefn.assign_expr(tree,self.funcdef)
             if tree.data == 'if_stmt':
                 self.__if_block = True
-                self.__exper = True
+            if tree.data == 'while_stmt':
+                self.__while_block = True
+                self.funcdef[-1]['instructions'].append({'ins':'br','op_32':0,'while_start':True})
             #前序
             for child in tree.children:
                 self.codegen(child)
@@ -71,13 +73,22 @@ class Generator():
                             ins.pop('fill')
                         i += 1
                     self.__if_block = False
+                if self.__while_block:
+                    i = 0 
+                    for ins in reversed(self.funcdef[-1]['instructions']):
+                        if 'fill' in ins:
+                            ins['op_32'] = i+1
+                            ins.pop('fill')
+                        if 'while_start' in ins:
+                            self.funcdef[-1]['instructions'].append({'ins':'br','op_32':-(i+1)})
+                            ins.pop('while_start')
+                        i += 1
+                    self.__while_block = False
             if tree.data == 'let_decl_stmt':
                 if len(tree.children) == 3:
                     self.funcdef[-1]['instructions'].append({'ins':'store.64'})
-                self.__exper =False
             if tree.data == 'const_decl_stmt':
                 self.funcdef[-1]['instructions'].append({'ins':'store.64'})
-                self.__exper =False
             if tree.data == 'return_stmt':
                 postfn.return_stmt(tree,self.funcdef)
             if tree.data == 'assign_expr':
@@ -120,3 +131,5 @@ class Generator():
                 postfn.ident(tree,self.funcdef)
             if tree.type == 'FLOAT':
                 pass
+            if tree.type == "ESCAPED_STRING":
+                postfn.str_exper(tree,self.funcdef,self.globaldef)

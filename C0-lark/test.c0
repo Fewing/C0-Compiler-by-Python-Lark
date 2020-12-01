@@ -17,6 +17,7 @@ fn main() -> int {
     while i < j {
         putint(i);
         putchar(32);
+        putstr("hello world!");
         putint(fib(i));
         putln();
         i = i + 1;
