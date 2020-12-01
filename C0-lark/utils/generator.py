@@ -57,9 +57,8 @@ class Generator():
             for child in tree.children:
                 self.codegen(child)
             if tree.data == 'program':
-                self.funcdef[0]['instructions'].append({'ins':'stackalloc','op_32':1})
+                self.funcdef[0]['instructions'].append({'ins':'stackalloc','op_32':self.funcdef[func_table['main']['loc']]['return_slots']})
                 self.funcdef[0]['instructions'].append({'ins':'call','op_32':func_table['main']['loc']})
-                self.funcdef[0]['instructions'].append({'ins':'popn','op_32':1})
             #后序
             if tree.data == 'expr_stmt':
                 self.__exper = False

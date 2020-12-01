@@ -76,7 +76,7 @@ class C0ASM():
         s = struct.Struct('> I')
         self.__output += s.pack(len(value_list))
         for value in value_list:
-            if value['type']=='int':
+            if value['type'] == 'int':
                 s = struct.Struct('> B I q')
                 self.__output += s.pack(value['is_const'], 8, value['value'])
             if value['type'] == 'string':
@@ -91,9 +91,14 @@ class C0ASM():
         s = struct.Struct('> I')
         self.__output += s.pack(len(func_list))
         for func in func_list:
-            s = struct.Struct('> I I I I I')
-            self.__output += s.pack(func['name'], func['return_slots'],
-                                    func['param_slots'], func['loc_slots'], len(func['instructions']))
+            if func['name'] == 0:
+                s = struct.Struct('> I I I')
+                self.__output += s.pack(func['name'],
+                                        func['loc_slots'], len(func['instructions']))
+            else:
+                s = struct.Struct('> I I I I I')
+                self.__output += s.pack(func['name'], func['return_slots'],
+                                        func['param_slots'], func['loc_slots'], len(func['instructions']))
             for ins in func['instructions']:
                 if 'op_32' in ins:
                     self.addop(ins['ins'], op_32=ins['op_32'])
