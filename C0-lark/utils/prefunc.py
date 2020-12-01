@@ -128,7 +128,7 @@ def function(tree: Tree, funcdef: list, globaldef: list):
         func_table[key] = {
             'name': tree.children[0].value,
             'type': ret_type,
-            'loc': func['name'],
+            'loc': len(funcdef)-1,
             'para_num': para_num,
         }
     tree.children[0].type = "FNCIDENT"
