@@ -131,4 +131,5 @@ class Generator():
             if tree.type == 'FLOAT':
                 pass
             if tree.type == "ESCAPED_STRING":
-                postfn.str_exper(tree,self.funcdef,self.globaldef)
+                #postfn.str_exper(tree,self.funcdef,self.globaldef)
+                pass
