@@ -54,7 +54,7 @@ def str_exper(token: Token, funcdef: list, globaldef: list):
     g_var = {}
     g_var['type'] = 'string'
     g_var['is_const'] = 1
-    g_var['value'] = token.value[1:-1]
+    g_var['value'] = eval(token.value)
     loc = len(globaldef)
     globaldef.append(g_var)
     funcdef[-1]['instructions'].append({

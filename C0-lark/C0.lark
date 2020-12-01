@@ -94,10 +94,8 @@ as_expr : var_expr "as" ty
 %import common.INT 
 %import common.FLOAT 
 %import common.ESCAPED_STRING
-%import common.WS_INLINE
-%ignore WS_INLINE
+%import common.WS
+%ignore WS
 //注释
 COMMENT: "//" /[^\n]/*
 %ignore COMMENT
-
-%ignore "\n"
