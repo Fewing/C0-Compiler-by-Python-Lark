@@ -68,6 +68,7 @@ class Generator():
                 self.funcdef[-1]['instructions'].append(
                     {'ins': 'br', 'op_32': 0, 'if_start': True})
             if tree.data == 'elif_stmt':
+                tree.children[1].data = 'if_block_stmt'
                 if len(tree.children) == 3:
                     if tree.children[2].data == 'if_stmt':
                         tree.children[2].data = 'elif_stmt'
