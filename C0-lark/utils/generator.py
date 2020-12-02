@@ -17,6 +17,7 @@ class Generator():
                 }, ]
     __next_block = True  # 函数传参后，下一个block_stmt不执行
     __if_block = 0  # if语句块嵌套层数
+    __else_block = 0  # else语句块
     __while_block = 0  # while语句块嵌套层数
 
     def codegen(self, tree: Tree):
@@ -27,16 +28,18 @@ class Generator():
                     prefn.block_stmt(tree)
                 else:
                     self.__next_block = True
-                if self.__if_block:
-                    self.funcdef[-1]['instructions'].append(
-                        {'ins': 'br.true', 'op_32': 1})
-                    self.funcdef[-1]['instructions'].append(
-                        {'ins': 'br', 'op_32': 0, 'fill': True})
-                if self.__while_block:
-                    self.funcdef[-1]['instructions'].append(
-                        {'ins': 'br.true', 'op_32': 1})
-                    self.funcdef[-1]['instructions'].append(
-                        {'ins': 'br', 'op_32': 0, 'fill': True})
+            if tree.data == 'if_block_stmt':
+                prefn.block_stmt(tree)
+                self.funcdef[-1]['instructions'].append(
+                    {'ins': 'br.true', 'op_32': 1})
+                self.funcdef[-1]['instructions'].append(
+                    {'ins': 'br', 'op_32': 0, 'fill': True})
+            if tree.data == 'while_block_stmt':
+                prefn.block_stmt(tree)
+                self.funcdef[-1]['instructions'].append(
+                    {'ins': 'br.true', 'op_32': 1})
+                self.funcdef[-1]['instructions'].append(
+                    {'ins': 'br', 'op_32': 0, 'fill': True})
             if tree.data == 'let_decl_stmt':
                 prefn.let_decl_stmt(tree, self.globaldef, self.funcdef)
             if tree.data == 'const_decl_stmt':
@@ -56,31 +59,54 @@ class Generator():
                 prefn.assign_expr(tree, self.funcdef)
             if tree.data == 'if_stmt':
                 self.__if_block += 1
+                tree.children[1].data = 'if_block_stmt'
+                if len(tree.children) == 3:
+                    tree.children[2].data = 'else_stmt'
+                self.funcdef[-1]['instructions'].append(
+                    {'ins': 'br', 'op_32': 0, 'if_start': True})
+            if tree.data == 'else_stmt':
+                if len(tree.children) != 1:
+                    tree.children[1].data = 'if_block_stmt'
+                    if len(tree.children) == 3:
+                        tree.children[2].data = 'else_stmt'
             if tree.data == 'while_stmt':
                 self.__while_block += 1
+                tree.children[1].data = 'while_block_stmt'
                 self.funcdef[-1]['instructions'].append(
                     {'ins': 'br', 'op_32': 0, 'while_start': True})
             for child in tree.children:
                 self.codegen(child)
+            # 后序
             if tree.data == 'program':
                 self.funcdef[0]['instructions'].append(
                     {'ins': 'stackalloc', 'op_32': self.funcdef[func_table['main']['loc']]['return_slots']})
                 self.funcdef[0]['instructions'].append(
                     {'ins': 'call', 'op_32': func_table['main']['loc']})
-            # 后序
             if tree.data == 'function':
                 postfn.function(tree, self.funcdef)
-            if tree.data == 'block_stmt':
+            if tree.data == 'if_stmt':
+                i = 0
+                for ins in reversed(self.funcdef[-1]['instructions']):
+                    if 'if_id' in ins:
+                        ins['op_32'] = i
+                        ins.pop('if_id')
+                    if 'if_start' in ins:
+                        ins['if_start'] = False
+                        break
+                    i += 1
+            if tree.data == 'if_block_stmt':
                 postfn.block_stmt(tree)
-                if self.__if_block > 0:
-                    i = 0
-                    for ins in reversed(self.funcdef[-1]['instructions']):
-                        if 'fill' in ins:
-                            ins['op_32'] = i
-                            ins.pop('fill')
-                            break
-                        i += 1
-                    self.__if_block -= 1
+                self.funcdef[-1]['instructions'].append(
+                    {'ins': 'br', 'op_32': 0, 'if_id': self.__if_block})  # 跳出
+                i = 0
+                for ins in reversed(self.funcdef[-1]['instructions']):
+                    if 'fill' in ins:
+                        ins['op_32'] = i
+                        ins.pop('fill')
+                        break
+                    i += 1
+            if tree.data == 'while_block_stmt':
+                postfn.block_stmt(tree)
                 if self.__while_block > 0:
                     i = 0
                     for ins in reversed(self.funcdef[-1]['instructions']):
@@ -90,10 +116,12 @@ class Generator():
                         if 'while_start' in ins:
                             self.funcdef[-1]['instructions'].append(
                                 {'ins': 'br', 'op_32': -(i+1)})
-                            ins.pop('while_start')
+                            ins['while_start'] = False
                             break
                         i += 1
                     self.__while_block -= 1
+            if tree.data == 'block_stmt':
+                postfn.block_stmt(tree)
             if tree.data == 'let_decl_stmt':
                 if len(tree.children) == 3:
                     self.funcdef[-1]['instructions'].append(
