@@ -65,7 +65,7 @@ class Generator():
                 self.funcdef[-1]['instructions'].append(
                     {'ins': 'br', 'op_32': 0, 'if_start': True})
             if tree.data == 'else_stmt':
-                if len(tree.children) != 1:
+                if len(tree.children) > 1:
                     tree.children[1].data = 'if_block_stmt'
                     if len(tree.children) == 3:
                         tree.children[2].data = 'else_stmt'
