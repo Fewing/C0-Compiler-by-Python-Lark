@@ -34,8 +34,6 @@ def let_decl_stmt(tree: Tree, globaldef: list, funcdef: list):
                     'ins': 'global',
                     'op_32': loc,
                 })
-                tree.children[0].type = "ASSIIDENT"
-
         else:  # 局部变量
             loc = funcdef[-1]['loc_slots']
             funcdef[-1]['loc_slots'] += 1
@@ -52,7 +50,7 @@ def let_decl_stmt(tree: Tree, globaldef: list, funcdef: list):
                     'ins': 'loca',
                     'op_32': loc,
                 })
-                tree.children[0].type = "ASSIIDENT"
+        tree.children[0].type = "ASSIIDENT"
 
 
 def const_decl_stmt(tree: Tree, globaldef: list, funcdef: list):
