@@ -8,6 +8,7 @@ fn main() -> void {
         mid = (low + high + 1) / 2;
         putint(mid);
         putln();
+        break;
         if mid > needle {
             high = mid;
         } else if mid == needle {

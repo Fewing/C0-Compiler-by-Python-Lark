@@ -120,7 +120,7 @@ class Generator():
                     if 'break' in ins and ins['break']:
                         ins['op_32'] = -(i+1)
                         ins['break'] = False
-                    if 'break' in ins and ins['continue']:
+                    if 'continue' in ins and ins['continue']:
                         ins['op_32'] = i
                         ins['break'] = False
                     if 'while_start' in ins and ins['while_start']:

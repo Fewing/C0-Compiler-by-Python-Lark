@@ -18,6 +18,8 @@ function : "fn" IDENT "(" function_param_list? ")" "->" ty block_stmt
     | decl_stmt
     | if_stmt
     | while_stmt
+    | break_stmt
+    | continue_stmt
     | return_stmt
     | block_stmt
     | empty_stmt
@@ -39,8 +41,8 @@ block_stmt : "{" stmt* "}"
 empty_stmt : ";"
 
 //break和continue
-break_stmt.10 -> 'break' ';'
-continue_stmt.10 -> 'continue' ';'
+break_stmt.100 : "break" ";"
+continue_stmt.100 : "continue" ";"
 
 //表达式
 ?expr : binary_expr
