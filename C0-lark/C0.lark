@@ -38,6 +38,9 @@ block_stmt : "{" stmt* "}"
 //空语句
 empty_stmt : ";"
 
+//break和continue
+break_stmt.10 -> 'break' ';'
+continue_stmt.10 -> 'continue' ';'
 
 //表达式
 ?expr : binary_expr
