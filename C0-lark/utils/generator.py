@@ -16,8 +16,8 @@ class Generator():
                 'instructions': []
                 }, ]
     __next_block = True  # 函数传参后，下一个block_stmt不执行
-    __if_block = False  # if语句块标志
-    __while_block = False  # while语句块标志
+    __if_block = 0  # if语句块嵌套层数
+    __while_block = 0  # while语句块嵌套层数
 
     def codegen(self, tree: Tree):
         if isinstance(tree, Tree):
@@ -55,9 +55,9 @@ class Generator():
             if tree.data == 'assign_expr':
                 prefn.assign_expr(tree, self.funcdef)
             if tree.data == 'if_stmt':
-                self.__if_block = True
+                self.__if_block += 1
             if tree.data == 'while_stmt':
-                self.__while_block = True
+                self.__while_block += 1
                 self.funcdef[-1]['instructions'].append(
                     {'ins': 'br', 'op_32': 0, 'while_start': True})
             for child in tree.children:
@@ -72,15 +72,16 @@ class Generator():
                 postfn.function(tree, self.funcdef)
             if tree.data == 'block_stmt':
                 postfn.block_stmt(tree)
-                if self.__if_block:
+                if self.__if_block > 0:
                     i = 0
                     for ins in reversed(self.funcdef[-1]['instructions']):
                         if 'fill' in ins:
                             ins['op_32'] = i
                             ins.pop('fill')
+                            break
                         i += 1
-                    self.__if_block = False
-                if self.__while_block:
+                    self.__if_block -= 1
+                if self.__while_block > 0:
                     i = 0
                     for ins in reversed(self.funcdef[-1]['instructions']):
                         if 'fill' in ins:
@@ -90,8 +91,9 @@ class Generator():
                             self.funcdef[-1]['instructions'].append(
                                 {'ins': 'br', 'op_32': -(i+1)})
                             ins.pop('while_start')
+                            break
                         i += 1
-                    self.__while_block = False
+                    self.__while_block -= 1
             if tree.data == 'let_decl_stmt':
                 if len(tree.children) == 3:
                     self.funcdef[-1]['instructions'].append(
