@@ -118,7 +118,7 @@ class Generator():
                         ins['op_32'] = i+1
                         ins.pop('fill')
                     if 'break' in ins and ins['break']:
-                        ins['op_32'] = -(i+1)
+                        ins['op_32'] = (i+1)
                         ins['break'] = False
                     if 'continue' in ins and ins['continue']:
                         ins['op_32'] = i
@@ -131,11 +131,17 @@ class Generator():
                     i += 1
                 self.__while_block -= 1
             if tree.data == 'break_stmt':
-                self.funcdef[-1]['instructions'].append(
-                    {'ins': 'br', 'op_32': 0, 'break': True})
+                if self.__while_block > 0:
+                    self.funcdef[-1]['instructions'].append(
+                        {'ins': 'br', 'op_32': 0, 'break': True})
+                else:
+                    raise RuntimeError('break must in a while block')
             if tree.data == 'continue_stmt':
-                self.funcdef[-1]['instructions'].append(
-                    {'ins': 'br', 'op_32': 0, 'continue': True})
+                if self.__while_block > 0:
+                    self.funcdef[-1]['instructions'].append(
+                        {'ins': 'br', 'op_32': 0, 'continue': True})
+                else:
+                    raise RuntimeError('continue must in a while block')
             if tree.data == 'block_stmt':
                 postfn.block_stmt(tree)
             if tree.data == 'let_decl_stmt':
