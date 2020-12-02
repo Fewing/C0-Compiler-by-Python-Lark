@@ -61,14 +61,20 @@ class Generator():
                 self.__if_block += 1
                 tree.children[1].data = 'if_block_stmt'
                 if len(tree.children) == 3:
-                    tree.children[2].data = 'else_stmt'
+                    if tree.children[2].data == 'if_stmt':
+                        tree.children[2].data = 'elif_stmt'
+                    else:
+                        tree.children[2].data = 'else_stmt'
                 self.funcdef[-1]['instructions'].append(
                     {'ins': 'br', 'op_32': 0, 'if_start': True})
-            if tree.data == 'else_stmt':
-                if len(tree.children) > 1:
-                    tree.children[1].data = 'if_block_stmt'
-                    if len(tree.children) == 3:
+            if tree.data == 'elif_stmt':
+                if len(tree.children) == 3:
+                    if tree.children[2].data == 'if_stmt':
+                        tree.children[2].data = 'elif_stmt'
+                    else:
                         tree.children[2].data = 'else_stmt'
+                self.funcdef[-1]['instructions'].append(
+                    {'ins': 'br', 'op_32': 0, 'if_start': True})
             if tree.data == 'while_stmt':
                 self.__while_block += 1
                 tree.children[1].data = 'while_block_stmt'

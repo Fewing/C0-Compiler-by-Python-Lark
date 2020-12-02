@@ -139,7 +139,7 @@ def function(tree: Tree, funcdef: list, globaldef: list):
 def function_param(tree: Tree, funcdef: list):
     func = funcdef[-1]
     key = str(tree.children[0].value)
-    loc = func['param_slots']+1
+    loc = func['param_slots'] + func['return_slots']
     func['param_slots'] += 1
     ident_table[-1][key] = {
         'name': tree.children[0].value,
