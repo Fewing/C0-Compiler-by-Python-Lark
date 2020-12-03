@@ -1,7 +1,7 @@
 [jobs.c0]
 
-image = { source = "dockerfile", path = ".", tag = "pascal-lex-example" }
+image = { source = "dockerfile", path = ".", tag = "c0-compiler" }
 
 run = [
-  "python C0-lark/main.py $input -o $asm",
+  "pypy3 C0-lark/main.py $input -o $asm",
 ]
