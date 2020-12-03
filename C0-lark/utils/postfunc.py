@@ -4,7 +4,12 @@ from .stdlib import lib_table, code_gen
 
 
 def function(tree: Tree, funcdef: list):
-    funcdef[-1]['instructions'].append({'ins': 'ret'})
+    key = str(tree.children[0].value)
+    if func_table[key]['type'] == 'void' and funcdef[-1]['instructions'][-1] != {'ins': 'ret'}:
+        funcdef[-1]['instructions'].append({'ins': 'ret'})
+    else:
+        if funcdef[-1]['instructions'][-1] != {'ins': 'ret'}:
+            raise RuntimeError('Not All Routes Return')
 
 def block_stmt(tree: Tree):
     ident_table.pop()

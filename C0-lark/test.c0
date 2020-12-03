@@ -1,5 +1,14 @@
-fn main() -> void {
-    let a: int = 0;
-    a = 'a';
-    putchar(a);
+fn main() -> int {
+    let i:int = 1;
+    if i >= 0 {
+        if i >= 0 {
+            i = i+1;
+        }
+        i = 1;
+        return 1;
+    }
+    else{
+        i = 10;
+    }
+    // 这个分支没有返回
 }
