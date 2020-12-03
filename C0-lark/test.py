@@ -19,6 +19,11 @@ if __name__ == "__main__":
     gen = Generator()
     gen.codegen(parse_tree)
     print(json.dumps(gen.globaldef, indent=4, sort_keys=True))
+    for func in gen.funcdef:
+        i = 0
+        for ins in func['instructions']:
+            ins['index'] = i
+            i += 1
     print(json.dumps(gen.funcdef, indent=4, sort_keys=True))
     #汇编
     c0asm = C0ASM()

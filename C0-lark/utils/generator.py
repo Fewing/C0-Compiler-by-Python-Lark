@@ -122,7 +122,7 @@ class Generator():
                         ins['break'] = False
                     if 'continue' in ins and ins['continue']:
                         ins['op_32'] = i
-                        ins['break'] = False
+                        ins['continue'] = False
                     if 'while_start' in ins and ins['while_start']:
                         self.funcdef[-1]['instructions'].append(
                             {'ins': 'br', 'op_32': -(i+1)})
