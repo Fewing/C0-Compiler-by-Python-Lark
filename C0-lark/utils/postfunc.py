@@ -5,7 +5,7 @@ from .stdlib import lib_table, code_gen
 
 def function(tree: Tree, funcdef: list):
     key = str(tree.children[0].value)
-    if func_table[key]['type'] == 'void' and funcdef[-1]['instructions'][-1] != {'ins': 'ret'}:
+    if func_table[key]['type'] == 'void' and (len(funcdef[-1]['instructions'])==0 or funcdef[-1]['instructions'][-1] != {'ins': 'ret'}):
         funcdef[-1]['instructions'].append({'ins': 'ret'})
     else:
         if funcdef[-1]['instructions'][-1] != {'ins': 'ret'}:
