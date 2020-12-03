@@ -1,6 +1,6 @@
 from .table import ident_table, func_table
 from lark import Tree
-from .stdlib import lib_table, add_ret
+from .stdlib import lib_table, lib_check_type
 
 
 def program(tree: Tree):
@@ -163,6 +163,7 @@ def assign_expr(tree: Tree, funcdef: list):
     for table in reversed(ident_table):
         if key in table:
             ident = table[key]
+            tree.meta.empty = ident['type']
             if ident['const']:
                 raise RuntimeError('can not assign const:' + key)
             if ident['para']:
@@ -188,6 +189,7 @@ def assign_expr(tree: Tree, funcdef: list):
 def call_expr(tree: Tree, funcdef: list):
     key = str(tree.children[0].value)
     if key in func_table:
+        tree.meta.empty = func_table[key]['type']
         func = func_table[key]
         if func['type'] != 'void':
             funcdef[-1]['instructions'].append({
@@ -195,7 +197,7 @@ def call_expr(tree: Tree, funcdef: list):
                 'op_32': 1,
             })
     elif key in lib_table:
-        add_ret(key, funcdef)
+        tree.meta.empty = lib_table[key]['type']
     else:
         raise RuntimeError('function ' + key + ' is not declared')
     tree.children[0].type = "FNCIDENT"

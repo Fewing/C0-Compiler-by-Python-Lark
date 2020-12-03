@@ -108,8 +108,12 @@ class C0ASM():
             s = struct.Struct('> B i')
             self.__output += s.pack(ins, op_32)
         elif op_64 != None:
-            s = struct.Struct('> B q')
-            self.__output += s.pack(ins, op_64)
+            if isinstance(op_64, int):
+                s = struct.Struct('> B q')
+                self.__output += s.pack(ins, op_64)
+            else:
+                s = struct.Struct('> B d')
+                self.__output += s.pack(ins, op_64)
         else:
             s = struct.Struct('> B')
             self.__output += s.pack(ins)

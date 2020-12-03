@@ -67,7 +67,7 @@ str_expr : ESCAPED_STRING
 //赋值表达式
 assign_expr  : IDENT "=" var_expr
 //类型转换
-as_expr : var_expr "as" ty
+as_expr : atom "as" ty
 //布尔
 ?binary_expr : var_expr
     | binary_expr "==" var_expr -> equl
@@ -91,7 +91,8 @@ as_expr : var_expr "as" ty
      | CHAR          ->char
      | "-" atom         -> neg
      | IDENT             -> var
-     | "(" var_expr ")"
+     | as_expr
+     | "(" binary_expr ")"
      | call_expr
 
 //char

@@ -146,57 +146,116 @@ class Generator():
                 postfn.block_stmt(tree)
             if tree.data == 'let_decl_stmt':
                 if len(tree.children) == 3:
+                    if tree.children[1].data != tree.children[2].meta.empty:
+                        raise RuntimeError('type check failed')
                     self.funcdef[-1]['instructions'].append(
                         {'ins': 'store.64'})
             if tree.data == 'const_decl_stmt':
+                if tree.children[1].data != tree.children[2].meta.empty:
+                        raise RuntimeError('type check failed')
                 self.funcdef[-1]['instructions'].append({'ins': 'store.64'})
             if tree.data == 'return_stmt':
-                postfn.return_stmt(tree, self.funcdef)
+                postfn.return_stmt(tree, self.funcdef,self.globaldef)
             if tree.data == 'assign_expr':
+                postfn.check_assign_type(tree)
                 self.funcdef[-1]['instructions'].append({'ins': 'store.64'})
             if tree.data == 'call_expr':
                 postfn.call_expr(tree, self.funcdef)
+            if tree.data == 'as_expr':
+                postfn.as_expr(tree,self.funcdef)
             if tree.data == 'equl':
-                self.funcdef[-1]['instructions'].append({'ins': 'cmp.i'})
+                postfn.check_type(tree)
+                if tree.meta.empty == 'int':
+                    self.funcdef[-1]['instructions'].append({'ins': 'cmp.i'})
+                if tree.meta.empty == 'double':
+                    self.funcdef[-1]['instructions'].append({'ins': 'cmp.f'})
                 self.funcdef[-1]['instructions'].append({'ins': 'not'})
             if tree.data == 'neq':
-                self.funcdef[-1]['instructions'].append({'ins': 'cmp.i'})
+                postfn.check_type(tree)
+                if tree.meta.empty == 'int':
+                    self.funcdef[-1]['instructions'].append({'ins': 'cmp.i'})
+                if tree.meta.empty == 'double':
+                    self.funcdef[-1]['instructions'].append({'ins': 'cmp.f'})
             if tree.data == 'lt':
-                self.funcdef[-1]['instructions'].append({'ins': 'cmp.i'})
+                postfn.check_type(tree)
+                if tree.meta.empty == 'int':
+                    self.funcdef[-1]['instructions'].append({'ins': 'cmp.i'})
+                if tree.meta.empty == 'double':
+                    self.funcdef[-1]['instructions'].append({'ins': 'cmp.f'})
                 self.funcdef[-1]['instructions'].append({'ins': 'set.lt'})
             if tree.data == 'gt':
-                self.funcdef[-1]['instructions'].append({'ins': 'cmp.i'})
+                postfn.check_type(tree)
+                if tree.meta.empty == 'int':
+                    self.funcdef[-1]['instructions'].append({'ins': 'cmp.i'})
+                if tree.meta.empty == 'double':
+                    self.funcdef[-1]['instructions'].append({'ins': 'cmp.f'})
                 self.funcdef[-1]['instructions'].append({'ins': 'set.gt'})
             if tree.data == 'le':
-                self.funcdef[-1]['instructions'].append({'ins': 'cmp.i'})
+                postfn.check_type(tree)
+                if tree.meta.empty == 'int':
+                    self.funcdef[-1]['instructions'].append({'ins': 'cmp.i'})
+                if tree.meta.empty == 'double':
+                    self.funcdef[-1]['instructions'].append({'ins': 'cmp.f'})
                 self.funcdef[-1]['instructions'].append({'ins': 'set.gt'})
                 self.funcdef[-1]['instructions'].append({'ins': 'not'})
             if tree.data == 'ge':
-                self.funcdef[-1]['instructions'].append({'ins': 'cmp.i'})
+                postfn.check_type(tree)
+                if tree.meta.empty == 'int':
+                    self.funcdef[-1]['instructions'].append({'ins': 'cmp.i'})
+                if tree.meta.empty == 'double':
+                    self.funcdef[-1]['instructions'].append({'ins': 'cmp.f'})
                 self.funcdef[-1]['instructions'].append({'ins': 'set.lt'})
                 self.funcdef[-1]['instructions'].append({'ins': 'not'})
             if tree.data == 'add':
-                self.funcdef[-1]['instructions'].append({'ins': 'add.i'})
+                postfn.check_type(tree)
+                if tree.meta.empty == 'int':
+                    self.funcdef[-1]['instructions'].append({'ins': 'add.i'})
+                if tree.meta.empty == 'double':
+                    self.funcdef[-1]['instructions'].append({'ins': 'add.f'})
             if tree.data == 'sub':
-                self.funcdef[-1]['instructions'].append({'ins': 'sub.i'})
+                postfn.check_type(tree)
+                if tree.meta.empty == 'int':
+                    self.funcdef[-1]['instructions'].append({'ins': 'sub.i'})
+                if tree.meta.empty == 'double':
+                    self.funcdef[-1]['instructions'].append({'ins': 'sub.f'})
             if tree.data == 'mul':
-                self.funcdef[-1]['instructions'].append({'ins': 'mul.i'})
+                postfn.check_type(tree)
+                if tree.meta.empty == 'int':
+                    self.funcdef[-1]['instructions'].append({'ins': 'mul.i'})
+                if tree.meta.empty == 'double':
+                    self.funcdef[-1]['instructions'].append({'ins': 'mul.f'})
             if tree.data == 'div':
-                self.funcdef[-1]['instructions'].append({'ins': 'div.i'})
+                postfn.check_type(tree)
+                if tree.meta.empty == 'int':
+                    self.funcdef[-1]['instructions'].append({'ins': 'div.i'})
+                if tree.meta.empty == 'double':
+                    self.funcdef[-1]['instructions'].append({'ins': 'div.f'})
             if tree.data == 'neg':
-                self.funcdef[-1]['instructions'].append({'ins': 'neg.i'})
+                tree.meta.empty = tree.children[0].meta.empty
+                if tree.meta.empty == 'int':
+                    self.funcdef[-1]['instructions'].append({'ins': 'neg.i'})
+                if tree.meta.empty == 'double':
+                    self.funcdef[-1]['instructions'].append({'ins': 'neg.f'})
+            if tree.data == 'float_num':
+                tree.meta.empty = 'double' #用一个没用的字段存类型
+            if tree.data == 'int_num':
+                tree.meta.empty = 'int'
+            if tree.data == 'char':
+                tree.meta.empty = 'int'
+            if tree.data == 'var':
+                tree.meta.empty = postfn.get_type(tree)
         else:  # 叶节点
             if tree.type == 'INT':
                 self.funcdef[-1]['instructions'].append(
                     {'ins': 'push', 'op_64': int(tree.value)})
             if tree.type == 'CHAR':
                 ch = eval(tree.value)
-                print(ord(ch))
                 self.funcdef[-1]['instructions'].append(
                     {'ins': 'push', 'op_64': ord(ch)})
             if tree.type == 'IDENT':
                 postfn.ident(tree, self.funcdef)
             if tree.type == 'FLOAT':
-                pass
+                self.funcdef[-1]['instructions'].append(
+                    {'ins': 'push', 'op_64': float(tree.value)})
             if tree.type == "ESCAPED_STRING":
                 postfn.str_exper(tree, self.funcdef, self.globaldef)

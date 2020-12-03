@@ -4,33 +4,55 @@ from lark import Tree
 lib_table = {
     'getint': {
         'para_num': 0,
+        'type': 'int',
     },
     'getdouble': {
         'para_num': 0,
+        'type': 'double',
     },
     'getchar': {
         'para_num': 0,
+        'type': 'int',
     },
     'putint': {
         'para_num': 1,
+        'type': 'void',
     },
     'putdouble': {
         'para_num': 1,
+        'type': 'void',
     },
     'putchar': {
         'para_num': 1,
+        'type': 'void',
     },
     'putstr': {
         'para_num': 1,
+        'type': 'void',
     },
     'putln': {
         'para_num': 0,
+        'type': 'void',
     },
 }
 
 
-def add_ret(name: str, fundef: list):
-    if lib_table[name]['para_num'] != 0:
+def lib_check_type(name: str,):
+    if name == 'getint':
+        pass
+    if name == 'getdouble':
+        pass
+    if name == 'getchar':
+        pass
+    if name == 'putint':
+        pass
+    if name == 'putdouble':
+        pass
+    if name == 'putchar':
+        pass
+    if name == 'putstr':
+        pass
+    if name == 'putln':
         pass
 
 
