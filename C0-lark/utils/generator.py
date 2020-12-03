@@ -189,6 +189,11 @@ class Generator():
             if tree.type == 'INT':
                 self.funcdef[-1]['instructions'].append(
                     {'ins': 'push', 'op_64': int(tree.value)})
+            if tree.type == 'CHAR':
+                ch = eval(tree.value)
+                print(ord(ch))
+                self.funcdef[-1]['instructions'].append(
+                    {'ins': 'push', 'op_64': ord(ch)})
             if tree.type == 'IDENT':
                 postfn.ident(tree, self.funcdef)
             if tree.type == 'FLOAT':

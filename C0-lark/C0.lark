@@ -88,11 +88,14 @@ as_expr : var_expr "as" ty
 
 ?atom: INT           -> int_num
      | FLOAT         ->float_num
+     | CHAR          ->char
      | "-" atom         -> neg
      | IDENT             -> var
      | "(" var_expr ")"
      | call_expr
 
+//char
+CHAR : "'" (/[^'\\\n\r]/ | "\\" /[\\"'nrt]/) "'"
 
 %import common.CNAME -> FNCIDENT
 %import common.CNAME -> IDENT
@@ -100,7 +103,7 @@ as_expr : var_expr "as" ty
 %import common.FLOAT 
 %import common.ESCAPED_STRING
 %import common.WS
+%import common.CPP_COMMENT
 %ignore WS
 //注释
-COMMENT: "//" /[^\n]/*
-%ignore COMMENT
+%ignore CPP_COMMENT
