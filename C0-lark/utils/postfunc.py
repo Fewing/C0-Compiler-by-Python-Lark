@@ -99,7 +99,6 @@ def check_assign_type(tree: Tree):
 
 def get_type(tree: Tree):
     key = tree.children[0]
-    print(key)
     for table in reversed(ident_table):
         if key in table:
             return table[key]['type']

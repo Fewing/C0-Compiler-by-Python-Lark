@@ -79,6 +79,9 @@ class C0ASM():
             if value['type'] == 'int':
                 s = struct.Struct('> B I q')
                 self.__output += s.pack(value['is_const'], 8, value['value'])
+            if value['type'] == 'double':
+                s = struct.Struct('> B I d')
+                self.__output += s.pack(value['is_const'], 8, value['value'])
             if value['type'] == 'string':
                 s = struct.Struct('> B I')
                 self.__output += s.pack(value['is_const'], len(value['value']))
