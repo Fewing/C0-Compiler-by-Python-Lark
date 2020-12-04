@@ -14,7 +14,6 @@ if __name__ == "__main__":
     lark_str = lark_file.read()
     lark = Lark(lark_str)
     parse_tree = lark.parse(input_str)
-    print(parse_tree.pretty())
     # 代码生成
     gen = Generator()
     gen.codegen(parse_tree)
