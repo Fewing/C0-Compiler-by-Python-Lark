@@ -9,7 +9,7 @@ if __name__ == "__main__":
     input_path = sys.argv[1]
     input_file = open(input_path)
     input_str = input_file.read()
-    print(input_str)
+    input_file.close()
     # 生成语法树
     lark_file = open('C0-lark/C0.lark',encoding='utf-8')
     lark_str = lark_file.read()
@@ -27,5 +27,4 @@ if __name__ == "__main__":
     output_path = sys.argv[3]
     ouput_file = open(output_path,'wb')
     ouput_file.write(obj)
-    input_file.close()
     ouput_file.close()
