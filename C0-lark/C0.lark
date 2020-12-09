@@ -46,10 +46,7 @@ continue_stmt.100 : "continue" ";"
 
 //表达式
 ?expr : binary_expr
-    | var_expr
     | assign_expr
-    | as_expr
-    | call_expr
     | str_expr
 //调用表达式
 call_param_list : (var_expr|str_expr) ("," var_expr|str_expr)*
