@@ -73,7 +73,7 @@ as_expr : atom "as" ty
     | binary_expr ">" var_expr ->gt
     | binary_expr "<=" var_expr ->le
     | binary_expr ">=" var_expr ->ge
-    | "(" binary_expr ")"
+
 //数值
 ?var_expr: product
     | var_expr "+" product   -> add
