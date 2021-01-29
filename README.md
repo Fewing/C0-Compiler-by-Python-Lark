@@ -7,7 +7,7 @@ BUAA软件学院2018级编译原理与技术C0大作业，基于[python-lark](ht
 
 * C0源文件编译为二进制文件
 ```
-python3 main.py test.c0 -o test.o0
+python3 C0-lark/main.py C0-lark/test.c0 -o C0-lark/test.o0
 ```
 
 * 使用[虚拟机](https://github.com/BUAA-SE-Compiling/natrium/releases)运行二进制文件
