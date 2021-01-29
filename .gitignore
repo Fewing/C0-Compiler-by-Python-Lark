@@ -3,3 +3,4 @@ C0-lark/out.txt
 *.pyc
 *.o
 C0-lark/navm.exe
+C0-lark/.vscode
